@@ -5,7 +5,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Text,
-  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import PropTypes from "prop-types";
 import { Input } from "./Input";
@@ -32,13 +32,14 @@ export const CreateTaskForm = ({ onClose = () => {} }) => {
           label="Task Heading"
           placeholder="Enter Task Heading"
           {...taskHeading}
-          customContainerStyle={styles.customFormInputContainer}
+          customContainerStyle={styles.formInputContainer}
         />
         <Input
           label="Task Detail"
           placeholder="Enter Your Task Detail"
           {...taskDetail}
-          customContainerStyle={styles.detailsInputContainer}
+          customContainerStyle={styles.formInputContainer}
+          customInputContainerStyle={styles.detailsInputContainer}
           customInputStyle={styles.detailsInput}
           multiline
           textAlignVertical="top"
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontFamily: "Roboto-Bold",
   },
-  customFormInputContainer: {
+  formInputContainer: {
     marginBottom: 20,
   },
   detailsInputContainer: {

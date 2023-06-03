@@ -11,6 +11,7 @@ export const Input = ({
   keyboardType = "default",
   placeholder = "",
   customContainerStyle,
+  customInputContainerStyle,
   customInputStyle,
   onChange = () => {},
   blur = false,
@@ -25,10 +26,12 @@ export const Input = ({
   }, []);
 
   const renderMessage = () => {
-    return !isValid && blur ? <Text>{error}</Text> : null;
+    return !isValid && blur ? (
+      <Text style={styles.errorMessage}>{error}</Text>
+    ) : null;
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, customContainerStyle]}>
       <View style={styles.labelContainer}>
         <Text style={styles.textStyle}>{label}</Text>
         {blur ? (
@@ -39,7 +42,7 @@ export const Input = ({
           )
         ) : null}
       </View>
-      <View style={[styles.inputContainer, customContainerStyle]}>
+      <View style={[styles.inputContainer, customInputContainerStyle]}>
         <TextInput
           placeholder={placeholder}
           value={value}
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingLeft: 14,
     borderBottomWidth: 0.5,
-    marginBottom: 5,
+
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -101,6 +104,12 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#BB0D4C",
     fontWeight: "500",
+    fontFamily: "Roboto-Regular",
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 11,
+    fontWeight: "400",
     fontFamily: "Roboto-Regular",
   },
 });

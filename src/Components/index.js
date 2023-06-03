@@ -4,3 +4,4 @@ export * from "./BottomSheet";
 export * from "./Button";
 export * from "./Input";
 export * from "./CreateTaskForm";
+export * from "./TasksList";

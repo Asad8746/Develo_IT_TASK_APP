@@ -39,6 +39,10 @@ export const CustomBottomSheet = forwardRef(({ children }, ref) => {
       snapPoints={snapPoints}
       onChange={handleSheetChange}
       handleComponent={null}
+      style={styles.contentContainer}
+      backgroundStyle={styles.backgroundStyle}
+      enableOverDrag={false}
+      enableContentPanningGesture={false}
     >
       <BottomSheetScrollView
         style={styles.container}
@@ -53,8 +57,8 @@ export const CustomBottomSheet = forwardRef(({ children }, ref) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
+  },
+  contentContainer: {
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -63,6 +67,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 6,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  backgroundStyle: {
+    backgroundColor: "white",
   },
 });
 
