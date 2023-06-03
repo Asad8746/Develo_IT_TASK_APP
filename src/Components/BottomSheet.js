@@ -5,12 +5,12 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { View, StyleSheet, Button, Text } from "react-native";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { StyleSheet } from "react-native";
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 export const CustomBottomSheet = forwardRef(({ children }, ref) => {
   const sheetRef = useRef(null);
 
-  const snapPoints = useMemo(() => [80, "70%"], []);
+  const snapPoints = useMemo(() => [80, "75%"], []);
 
   // callbacks
   const handleSheetChange = useCallback((index) => {
@@ -38,12 +38,14 @@ export const CustomBottomSheet = forwardRef(({ children }, ref) => {
       ref={sheetRef}
       snapPoints={snapPoints}
       onChange={handleSheetChange}
-      enableTouchThrough={true}
-      enablePanDownToClose
-      enableOverDrag
-      enableHandlePanningGesture
+      handleComponent={null}
     >
-      <BottomSheetView>{children}</BottomSheetView>
+      <BottomSheetScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        {children}
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 });
@@ -51,6 +53,16 @@ export const CustomBottomSheet = forwardRef(({ children }, ref) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
   },
 });
 

@@ -1,11 +1,12 @@
 import React, { useCallback, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Container,
   Header,
   CustomButton,
   CustomBottomSheet,
+  CreateTaskForm,
 } from "../Components";
 export const HomeScreen = () => {
   const sheetRef = useRef(null);
@@ -16,22 +17,32 @@ export const HomeScreen = () => {
   const onCreateBtnPress = useCallback(() => {
     sheetRef.current?.snapToFirstIndex();
   }, [sheetRef.current]);
+  const closeCreateTaskBt = useCallback(() => {
+    sheetRef.current?.close();
+  }, [sheetRef.current]);
   return (
     <Container>
       <Header />
-
-      <CustomButton
-        title="Add New Task"
-        renderIcon={renderButtonIcon}
-        onPress={onCreateBtnPress}
-      />
-      <CustomBottomSheet ref={sheetRef} />
+      <CustomBottomSheet ref={sheetRef}>
+        <CreateTaskForm onClose={closeCreateTaskBt} />
+      </CustomBottomSheet>
+      <View style={styles.floatingButtonContainer}>
+        <CustomButton
+          title="Add New Task"
+          renderIcon={renderButtonIcon}
+          onPress={onCreateBtnPress}
+        />
+      </View>
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  floatingButtonContainer: {
+    position: "absolute",
+    bottom: 10,
+    width: "90%",
+    alignSelf: "center",
+    zIndex: -1,
   },
 });
