@@ -22,7 +22,6 @@ export default function App() {
     "Roboto-Thin": require("./assets/fonts/Roboto-Thin.ttf"),
     "Roboto-Thin-Italic": require("./assets/fonts/Roboto-ThinItalic.ttf"),
   });
-  console.log(fontsLoaded);
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();

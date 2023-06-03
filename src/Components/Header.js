@@ -19,7 +19,10 @@ export const Header = () => {
   return (
     <View style={styles.container}>
       <View style={[styles.row, styles.topRow]}>
-        <AntDesign name="close" size={16} color={iconConfig.color} />
+        {renderTouchableIcon(
+          <AntDesign name="close" size={16} color={iconConfig.color} />
+        )}
+
         <View style={[styles.row]}>
           {renderTouchableIcon(
             <AntDesign name="left" size={12} color={iconConfig.color} />
@@ -29,11 +32,13 @@ export const Header = () => {
             <AntDesign name="right" size={12} color={iconConfig.color} />
           )}
         </View>
-        <MaterialCommunityIcons
-          name="calendar-month"
-          size={20}
-          color={iconConfig.color}
-        />
+        {renderTouchableIcon(
+          <MaterialCommunityIcons
+            name="calendar-month"
+            size={20}
+            color={iconConfig.color}
+          />
+        )}
       </View>
       <View style={[styles.row, styles.inputContainer]}>
         <Feather name="search" size={20} color="black" />
