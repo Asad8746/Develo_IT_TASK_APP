@@ -13,9 +13,7 @@ export const CustomBottomSheet = forwardRef(({ children }, ref) => {
   const snapPoints = useMemo(() => [80, "75%"], []);
 
   // callbacks
-  const handleSheetChange = useCallback((index) => {
-    console.log("handleSheetChange", index);
-  }, []);
+  const handleSheetChange = useCallback((index) => {}, []);
   const handleSnapPress = useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
   }, []);

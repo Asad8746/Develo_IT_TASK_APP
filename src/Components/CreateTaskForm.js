@@ -1,26 +1,48 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   StyleSheet,
   Keyboard,
   TouchableWithoutFeedback,
   Text,
-  KeyboardAvoidingView,
 } from "react-native";
 import PropTypes from "prop-types";
+import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+
 import { Input } from "./Input";
 import { CustomButton } from "./Button";
 import { InputDatePicker } from "./InputDatePicker";
 import { useFormValidation } from "../hooks";
+import { createNewTask } from "../store/tasks";
+
 export const CreateTaskForm = ({ onClose = () => {} }) => {
+  const dispatch = useDispatch();
   const taskHeading = useFormValidation("", "Task Heading is Required");
   const taskDetail = useFormValidation("", "Task Detail is Required");
-
+  const [date, setDate] = useState({
+    time: dayjs().format("HH:mm"),
+    day: dayjs().format("DD-MM-YYYY"),
+  });
+  const disabled = !taskHeading.isValid && !taskDetail.isValid;
   const onSavePress = useCallback(() => {
-    console.log("Save Pressed");
-  }, []);
+    taskHeading.reset();
+    taskDetail.reset();
+    dispatch(
+      createNewTask({
+        heading: taskHeading.value,
+        detail: taskDetail.value,
+        time: date.time,
+        day: date.day,
+      })
+    );
+    onClose();
+  }, [taskHeading.value, taskDetail.value, date.day, date.time]);
   const onCancelPress = useCallback(() => {
     onClose();
+  }, []);
+  const onDateChange = useCallback((time, day) => {
+    setDate({ time, day });
   }, []);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -44,11 +66,16 @@ export const CreateTaskForm = ({ onClose = () => {} }) => {
           multiline
           textAlignVertical="top"
         />
-        <InputDatePicker />
+        <InputDatePicker
+          day={date.day}
+          time={date.time}
+          onDateChange={onDateChange}
+        />
         <CustomButton
           title="Save Changes"
           customContainerStyle={styles.saveBtnContainer}
           onPress={onSavePress}
+          disabled={disabled}
         />
         <CustomButton type="secondary" title="Cancel" onPress={onCancelPress} />
       </View>

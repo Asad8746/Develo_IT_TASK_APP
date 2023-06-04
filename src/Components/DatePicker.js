@@ -4,37 +4,52 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
+import PropTypes from "prop-types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import dayjs from "dayjs";
 
-export const CustomDatePicker = forwardRef((props, ref) => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  useImperativeHandle(ref, () => {
-    return {
-      showDatePicker() {
-        setDatePickerVisibility(true);
-      },
-      hideDatePicker() {
-        setDatePickerVisibility(false);
-      },
+export const CustomDatePicker = forwardRef(
+  ({ mode = "datetime", date = new Date(), onDatePick = () => {} }, ref) => {
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    useImperativeHandle(ref, () => {
+      return {
+        showDatePicker() {
+          setDatePickerVisibility(true);
+        },
+        hideDatePicker() {
+          setDatePickerVisibility(false);
+        },
+      };
+    });
+
+    const hideDatePicker = useCallback(() => {
+      setDatePickerVisibility(false);
+    }, []);
+
+    const handleConfirm = (date) => {
+      if (date) {
+        onDatePick(date);
+      }
+      hideDatePicker();
     };
-  });
+    return (
+      <>
+        <DateTimePickerModal
+          date={date}
+          isVisible={isDatePickerVisible}
+          minimumDate={new Date()}
+          mode={mode}
+          minuteInterval={59}
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+          is24Hour={true}
+        />
+      </>
+    );
+  }
+);
 
-  const hideDatePicker = useCallback(() => {
-    setDatePickerVisibility(false);
-  }, []);
-
-  const handleConfirm = (date) => {
-    console.warn("A date has been picked: ", date);
-    hideDatePicker();
-  };
-  return (
-    <>
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="datetime"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
-    </>
-  );
-});
+CustomDatePicker.propTypes = {
+  mode: PropTypes.string,
+  onDatePick: PropTypes.func.isRequired,
+};

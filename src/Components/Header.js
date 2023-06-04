@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -7,44 +7,97 @@ import {
   TextInput,
 } from "react-native";
 import { AntDesign, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import dayjs from "dayjs";
+
+import { CustomDatePicker } from "./DatePicker";
+import { setSelectedDate } from "../store/tasks";
 
 const iconConfig = {
   color: "black",
 };
 
 export const Header = () => {
-  const renderTouchableIcon = (icon, onPress = () => {}) => {
-    return <TouchableOpacity onPress={onPress}>{icon}</TouchableOpacity>;
-  };
-  return (
-    <View style={styles.container}>
-      <View style={[styles.row, styles.topRow]}>
-        {renderTouchableIcon(
-          <AntDesign name="close" size={16} color={iconConfig.color} />
-        )}
+  const pickerRef = useRef(null);
+  const dispatch = useDispatch();
+  const today = dayjs().format("DD-MM-YYYY");
+  const selectedDate = useSelector((store) => store.tasks.selectedDate);
+  const [day, month, year] = selectedDate.split("-");
 
-        <View style={[styles.row]}>
+  const renderTouchableIcon = (icon, onPress = () => {}) => {
+    return (
+      <TouchableOpacity style={styles.iconTouchable} onPress={onPress}>
+        {icon}
+      </TouchableOpacity>
+    );
+  };
+
+  const onCalendarIconPress = useCallback(() => {
+    pickerRef.current?.showDatePicker();
+  }, [pickerRef.current]);
+  const onDatePick = useCallback((date) => {
+    if (date) {
+      const formatedDate = dayjs(date).format("DD-MM-YYYY");
+      dispatch(setSelectedDate(formatedDate));
+    }
+  }, []);
+
+  const onLeftIconPress = useCallback(() => {
+    const date = dayjs(`${year}-${month}-${day}`)
+      .subtract(1, "day")
+      .format("DD-MM-YYYY");
+    dispatch(setSelectedDate(date));
+  }, [selectedDate]);
+
+  const onRightIconPress = useCallback(() => {
+    const date = dayjs(`${year}-${month}-${day}`)
+      .add(1, "day")
+      .format("DD-MM-YYYY");
+    dispatch(setSelectedDate(date));
+  }, [selectedDate]);
+
+  return (
+    <>
+      <View style={styles.container}>
+        <View style={[styles.row, styles.topRow]}>
           {renderTouchableIcon(
-            <AntDesign name="left" size={12} color={iconConfig.color} />
+            <AntDesign name="close" size={16} color={iconConfig.color} />
           )}
-          <Text style={styles.dateTitle}>Today</Text>
+
+          <View style={[styles.row]}>
+            {renderTouchableIcon(
+              <AntDesign name="left" size={12} color={iconConfig.color} />,
+              onLeftIconPress
+            )}
+            <Text style={styles.dateTitle}>
+              {today === selectedDate ? "Today" : selectedDate}
+            </Text>
+            {renderTouchableIcon(
+              <AntDesign name="right" size={12} color={iconConfig.color} />,
+              onRightIconPress
+            )}
+          </View>
           {renderTouchableIcon(
-            <AntDesign name="right" size={12} color={iconConfig.color} />
+            <MaterialCommunityIcons
+              name="calendar-month"
+              size={20}
+              color={iconConfig.color}
+            />,
+            onCalendarIconPress
           )}
         </View>
-        {renderTouchableIcon(
-          <MaterialCommunityIcons
-            name="calendar-month"
-            size={20}
-            color={iconConfig.color}
-          />
-        )}
+        <View style={[styles.row, styles.inputContainer]}>
+          <Feather name="search" size={20} color="black" />
+          <TextInput style={styles.textInput} />
+        </View>
       </View>
-      <View style={[styles.row, styles.inputContainer]}>
-        <Feather name="search" size={20} color="black" />
-        <TextInput style={styles.textInput} />
-      </View>
-    </View>
+      <CustomDatePicker
+        date={new Date(`${year}-${month}-${day}`)}
+        mode="date"
+        ref={pickerRef}
+        onDatePick={onDatePick}
+      />
+    </>
   );
 };
 
@@ -94,5 +147,10 @@ const styles = StyleSheet.create({
     color: "#2C2C2C",
     marginLeft: 10,
     paddingLeft: 5,
+  },
+  iconTouchable: {
+    padding: 3,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

@@ -4,7 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import Main from "./src/Main";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-
+import { Provider } from "react-redux";
+import store from "./src/store";
 SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -31,7 +32,9 @@ export default function App() {
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <StatusBar style="auto" />
-      <Main />
+      <Provider store={store}>
+        <Main />
+      </Provider>
     </View>
   );
 }

@@ -8,65 +8,68 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { TaskCard } from "./TaskCard";
+import { useSelector } from "react-redux";
+// import tasks from "../store/tasks";
 const data = {
   "04-05-2023": {
     title: "04-05-2023",
     tasks: {
-      //     "8:00": [
-      //     {
-      //       id: 1,
-      //       heading: "Task #1",
-      //       detail: "Task Detail",
-      //       dueDate: "8 AM | 12-01-22",
-      //     },
-      //     {
-      //       id: 2,
-      //       heading: "Task #1",
-      //       detail: "Task Detail",
-      //       dueDate: "8 AM | 12-01-22",
-      //     },
-      //   ],
-      //   "9:00": [
-      //     {
-      //       id: 1,
-      //       heading: "Task #1",
-      //       detail: "Task Detail",
-      //       dueDate: "8 AM | 12-01-22",
-      //     },
-      //   ],
-      //   "1:00": [
-      //     {
-      //       id: 1,
-      //       heading: "Task #1",
-      //       detail: "Task Detail",
-      //       dueDate: "8 AM | 12-01-22",
-      //     },
-      //     {
-      //       id: 2,
-      //       heading: "Task #1",
-      //       detail: "Task Detail",
-      //       dueDate: "8 AM | 12-01-22",
-      //     },
-      //   ],
-      //   "23:00": [
-      //     {
-      //       id: 1,
-      //       heading: "Task #1",
-      //       detail: "Task Detail",
-      //       dueDate: "8 AM | 12-01-22",
-      //     },
-      //     {
-      //       id: 2,
-      //       heading: "Task #1",
-      //       detail: "Task Detail",
-      //       dueDate: "8 AM | 12-01-22",
-      //     },
-      //   ],
+      "08:00": [
+        {
+          id: 1,
+          heading: "Task #1",
+          detail: "Task Detail",
+          dueDate: "8 AM | 12-01-22",
+        },
+        {
+          id: 2,
+          heading: "Task #1",
+          detail: "Task Detail",
+          dueDate: "8 AM | 12-01-22",
+        },
+      ],
+      "09:00": [
+        {
+          id: 1,
+          heading: "Task #1",
+          detail: "Task Detail",
+          dueDate: "8 AM | 12-01-22",
+        },
+      ],
+      "01:00": [
+        {
+          id: 1,
+          heading: "Task #1",
+          detail: "Task Detail",
+          dueDate: "8 AM | 12-01-22",
+        },
+        {
+          id: 2,
+          heading: "Task #1",
+          detail: "Task Detail",
+          dueDate: "8 AM | 12-01-22",
+        },
+      ],
+      "23:00": [
+        {
+          id: 1,
+          heading: "Task #1",
+          detail: "Task Detail",
+          dueDate: "8 AM | 12-01-22",
+        },
+        {
+          id: 2,
+          heading: "Task #1",
+          detail: "Task Detail",
+          dueDate: "8 AM | 12-01-22",
+        },
+      ],
     },
   },
 };
 
 export const TasksList = () => {
+  const { selectedDate, data } = useSelector((store) => store.tasks);
   const renderTouchableIcon = (customStyle) => {
     return (
       <TouchableOpacity style={[styles.iconContainer, customStyle]}>
@@ -78,14 +81,14 @@ export const TasksList = () => {
     <ScrollView>
       <View style={styles.container}>
         {new Array(24).fill(1).map((_, idx) => {
-          const tasks = data["04-05-2023"].tasks[`${idx}:00`];
-
+          const time = String(idx).length === 1 ? `0${idx}:00` : `${idx}:00`;
+          const tasks = data[selectedDate]?.tasks[time];
           if (tasks) {
             return (
               <View>
                 <View style={styles.row}>
                   <View style={styles.hourContainer}>
-                    <Text style={styles.hourText}>{`${idx}:00`}</Text>
+                    <Text style={styles.hourText}>{time}</Text>
                     <View style={styles.line} />
                   </View>
                   <View style={styles.taskContainer}>
@@ -93,7 +96,7 @@ export const TasksList = () => {
                     {tasks.map((task) => {
                       return (
                         <>
-                          <TaskCard />
+                          <TaskCard task={task} />
                         </>
                       );
                     })}
@@ -105,7 +108,7 @@ export const TasksList = () => {
           return (
             <View style={styles.row}>
               <View style={styles.hourContainerWithoutTask}>
-                <Text style={styles.hourText}>{`${idx}:00`}</Text>
+                <Text style={styles.hourText}>{time}</Text>
               </View>
               <View style={styles.cardPlaceholder}>
                 {renderTouchableIcon()}

@@ -1,21 +1,20 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-export const TaskCard = ({ isSelected = true }) => {
+import PropTypes from "prop-types";
+export const TaskCard = ({ isSelected = true, task = {} }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
-        <Text style={styles.headingText}>Heading</Text>
+        <Text style={styles.headingText}>{task?.heading}</Text>
         <View style={styles.dateContainer}>
           <Text style={styles.dateText}>Due Date</Text>
-          <Text style={[styles.dateText, styles.date]}>10 AM | 12-01-22</Text>
+          <Text style={[styles.dateText, styles.date]}>{task?.dueDate}</Text>
         </View>
       </View>
       <View style={styles.detailContainer}>
         <Text style={styles.detail} numberOfLines={3} lineBreakMode="tail">
-          Lorem ipsum dolor sit amet consectetur. Eu eleifend lacus est
-          malesuada id sit habitasse sit. Id gravida vitae ultrices consequat
-          viverra sagittis adipiscing.
+          {task?.detail}
         </Text>
         <View
           style={[
@@ -29,7 +28,15 @@ export const TaskCard = ({ isSelected = true }) => {
     </View>
   );
 };
-
+TaskCard.propTypes = {
+  isSelected: PropTypes.bool,
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    heading: PropTypes.string.isRequired,
+    detail: PropTypes.string.isRequired,
+    dueDate: PropTypes.string.isRequired,
+  }),
+};
 const styles = StyleSheet.create({
   container: {
     height: 110,

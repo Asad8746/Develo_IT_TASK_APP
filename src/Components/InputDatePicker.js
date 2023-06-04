@@ -1,36 +1,47 @@
 import React, { useCallback, useRef } from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import { CustomDatePicker } from "./DatePicker";
+import PropTypes from "prop-types";
 import { AntDesign } from "@expo/vector-icons";
 
-export const InputDatePicker = () => {
+import { CustomDatePicker } from "./DatePicker";
+import dayjs from "dayjs";
+
+export const InputDatePicker = ({ mode, time, day, onDateChange }) => {
   const pickerRef = useRef(null);
 
-  const hideDatePicker = useCallback(() => {
-    setDatePickerVisibility(false);
-  }, []);
-
-  const handleConfirm = (date) => {
-    console.warn("A date has been picked: ", date);
-    hideDatePicker();
-  };
   const onDatePickerPress = useCallback(() => {
     pickerRef.current?.showDatePicker();
   }, [pickerRef.current]);
+  const onDatePick = useCallback((date) => {
+    if (date) {
+      const time = dayjs(date).format("HH : mm");
+      const day = dayjs(date).format("DD-MM-YYYY");
+      onDateChange(time, day);
+    }
+  }, []);
+
   return (
     <>
       <TouchableOpacity
         style={styles.datePlaceholderContainer}
         onPress={onDatePickerPress}
       >
-        <Text style={styles.dateText}>10:00 AM | 12/2/23</Text>
+        <Text style={styles.dateText}>
+          {time} | {day}
+        </Text>
         <AntDesign name="caretdown" size={10} color="#2B2B2B" />
-        <CustomDatePicker ref={pickerRef} />
+        <CustomDatePicker ref={pickerRef} mode={mode} onDatePick={onDatePick} />
       </TouchableOpacity>
     </>
   );
 };
 
+InputDatePicker.propTypes = {
+  mode: PropTypes.string,
+  day: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
+  onDateChange: PropTypes.func.isRequired,
+};
 const styles = StyleSheet.create({
   datePlaceholderContainer: {
     width: "100%",

@@ -11,6 +11,12 @@ export const useFormValidation = (initialValue, errorMessage = "") => {
   const onBlur = () => {
     setBlur(true);
   };
+  const reset = () => {
+    setState(initialValue);
+    setBlur(false);
+    setIsValid(false);
+    setError("");
+  };
   useEffect(() => {
     if (value.length <= 0) {
       setError(errorMessage);
@@ -27,5 +33,6 @@ export const useFormValidation = (initialValue, errorMessage = "") => {
     isValid,
     onChange,
     onBlur,
+    reset,
   };
 };
