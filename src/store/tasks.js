@@ -56,6 +56,59 @@ const slice = createSlice({
         };
       }
     },
+    moveTask(state, action) {
+      const selectedDate = state.selectedDate;
+      const prevDate = action.payload?.day;
+      const taskDay = state.data[selectedDate];
+      const prevTaskDay = state.data[prevDate];
+      const { id: prevId, heading, detail, time, updatedTime } = action.payload;
+      const [hour] = updatedTime?.split(":");
+      const id = Math.floor(Math.random() * 5000);
+
+      if (taskDay) {
+        taskDay.tasks[`${hour}:00`]
+          ? taskDay.tasks[`${hour}:00`].push({
+              id,
+              heading,
+              detail,
+              time,
+              day: selectedDate,
+            })
+          : (taskDay.tasks[`${hour}:00`] = [
+              {
+                id,
+                heading,
+                detail,
+                time,
+                day: selectedDate,
+              },
+            ]);
+      } else {
+        state.data[selectedDate] = {
+          title: selectedDate,
+          tasks: {
+            [`${hour}:00`]: [
+              {
+                id,
+                heading,
+                detail,
+                time,
+                day: selectedDate,
+              },
+            ],
+          },
+        };
+      }
+
+      if (prevTaskDay) {
+        const [hour] = time?.split(":");
+        prevTaskDay.tasks[`${hour}:00`] = prevTaskDay.tasks[`${hour}:00`]
+          ? prevTaskDay.tasks[`${hour}:00`].filter((task) => {
+              task.id !== prevId;
+            })
+          : [];
+      }
+    },
     createNewTask(state, action) {
       const { heading, detail, day, time } = action.payload;
       const [hour] = time.split(":");
@@ -123,5 +176,6 @@ export const {
   setSelectedTask,
   setTaskAction,
   copyTask,
+  moveTask,
 } = slice.actions;
 export default slice.reducer;

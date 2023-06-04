@@ -16,6 +16,7 @@ import {
   setSelectedTask,
   copyTask,
   setTaskAction,
+  moveTask,
 } from "../store/tasks";
 
 export const TasksList = () => {
@@ -34,7 +35,7 @@ export const TasksList = () => {
     },
     [actionsRef.current]
   );
-
+  console.log(selectedTask);
   const renderTouchableIcon = (time = "", customStyle) => {
     const onPress = () => {
       if (selectedTask) {
@@ -43,6 +44,7 @@ export const TasksList = () => {
         if (taskAction === TASKS_OPERATIONS.copy) {
           dispatch(copyTask({ ...selectedTask, time }));
         } else if (taskAction === TASKS_OPERATIONS.move) {
+          dispatch(moveTask({ ...selectedTask, updatedTime: time }));
         }
       }
       actionsRef.current.close();
@@ -70,7 +72,7 @@ export const TasksList = () => {
 
             if (tasks) {
               return (
-                <View>
+                <View key={time}>
                   <View style={styles.row}>
                     <View style={styles.hourContainer}>
                       <Text style={styles.hourText}>{time}</Text>
@@ -98,7 +100,7 @@ export const TasksList = () => {
               );
             }
             return (
-              <View style={styles.row}>
+              <View style={styles.row} key={time}>
                 <View style={styles.hourContainerWithoutTask}>
                   <Text style={styles.hourText}>{time}</Text>
                 </View>
