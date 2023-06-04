@@ -63,7 +63,7 @@ export const Input = ({
 
 Input.propTypes = {
   placeholder: PropsTypes.string.isRequired,
-  secureTextEntry: PropsTypes.bool.isRequired,
+  secureTextEntry: PropsTypes.bool,
   keyboardType: PropsTypes.string,
 };
 

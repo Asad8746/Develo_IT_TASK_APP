@@ -1,15 +1,28 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useCallback } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import PropTypes from "prop-types";
-export const TaskCard = ({ isSelected = true, task = {} }) => {
+import { useSelector } from "react-redux";
+export const TaskCard = ({
+  isSelected = false,
+  task = {},
+  onTaskPress = () => {},
+}) => {
+  const { selectedDate } = useSelector((store) => store.tasks);
+  const onPress = useCallback(() => {
+    onTaskPress(task);
+  }, []);
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.headingContainer}>
-        <Text style={styles.headingText}>{task?.heading}</Text>
+        <Text style={styles.headingText} numberOfLines={1}>
+          {task?.heading}
+        </Text>
         <View style={styles.dateContainer}>
           <Text style={styles.dateText}>Due Date</Text>
-          <Text style={[styles.dateText, styles.date]}>{task?.dueDate}</Text>
+          <Text style={[styles.dateText, styles.date]}>
+            {task?.time} | {task?.day}
+          </Text>
         </View>
       </View>
       <View style={styles.detailContainer}>
@@ -25,16 +38,17 @@ export const TaskCard = ({ isSelected = true, task = {} }) => {
           {isSelected && <AntDesign name="check" size={21} color="white" />}
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 TaskCard.propTypes = {
   isSelected: PropTypes.bool,
   task: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     heading: PropTypes.string.isRequired,
     detail: PropTypes.string.isRequired,
-    dueDate: PropTypes.string.isRequired,
+    time: PropTypes.string.isRequired,
+    day: PropTypes.string.isRequired,
   }),
 };
 const styles = StyleSheet.create({
@@ -59,10 +73,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontFamily: "Roboto-Bold",
     fontSize: 16,
+    flex: 1,
   },
   dateContainer: {
+    flexShrink: 0,
     flexDirection: "row",
-    gap: 10,
+    gap: 5,
     alignItems: "center",
   },
   dateText: {

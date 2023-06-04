@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Container,
@@ -11,17 +11,18 @@ import {
 } from "../Components";
 
 export const HomeScreen = () => {
-  const sheetRef = useRef(null);
+  const createSheetRef = useRef(null);
 
   const renderButtonIcon = useCallback(() => {
     return <MaterialIcons name="add" size={18} color="#fff" />;
   }, []);
   const onCreateBtnPress = useCallback(() => {
-    sheetRef.current?.snapToFirstIndex();
-  }, [sheetRef.current]);
+    createSheetRef.current?.snapToFirstIndex();
+  }, [createSheetRef.current]);
   const closeCreateTaskBt = useCallback(() => {
-    sheetRef.current?.close();
-  }, [sheetRef.current]);
+    createSheetRef.current?.close();
+  }, [createSheetRef.current]);
+
   return (
     <Container>
       <>
@@ -34,11 +35,9 @@ export const HomeScreen = () => {
             onPress={onCreateBtnPress}
           />
         </View>
-        {/* <View style={styles.bottomSheetContainer}> */}
-        <CustomBottomSheet ref={sheetRef}>
+        <CustomBottomSheet ref={createSheetRef}>
           <CreateTaskForm onClose={closeCreateTaskBt} />
         </CustomBottomSheet>
-        {/* </View> */}
       </>
     </Container>
   );

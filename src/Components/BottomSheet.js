@@ -6,51 +6,57 @@ import React, {
   forwardRef,
 } from "react";
 import { StyleSheet } from "react-native";
-import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-export const CustomBottomSheet = forwardRef(({ children }, ref) => {
-  const sheetRef = useRef(null);
-
-  const snapPoints = useMemo(() => [80, "75%"], []);
-
-  // callbacks
-  const handleSheetChange = useCallback((index) => {}, []);
-  const handleSnapPress = useCallback((index) => {
-    sheetRef.current?.snapToIndex(index);
-  }, []);
-  useImperativeHandle(ref, () => {
-    return {
-      snapToZeroIndex() {
-        handleSnapPress(0);
-      },
-      snapToFirstIndex() {
-        handleSnapPress(1);
-      },
-      close() {
-        sheetRef.current?.close();
-      },
-    };
-  });
-  return (
-    <BottomSheet
-      index={-1}
-      ref={sheetRef}
-      snapPoints={snapPoints}
-      onChange={handleSheetChange}
-      handleComponent={null}
-      style={styles.contentContainer}
-      backgroundStyle={styles.backgroundStyle}
-      enableOverDrag={false}
-      enableContentPanningGesture={false}
-    >
-      <BottomSheetScrollView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
+import BottomSheet, {
+  BottomSheetScrollView,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+export const CustomBottomSheet = forwardRef(
+  ({ children, isScrollView = true }, ref) => {
+    const sheetRef = useRef(null);
+    const snapPoints = useMemo(() => [80, "75%"], []);
+    const handleSheetChange = useCallback((index) => {}, []);
+    const handleSnapPress = useCallback((index) => {
+      sheetRef.current?.snapToIndex(index);
+    }, []);
+    useImperativeHandle(ref, () => {
+      return {
+        snapToZeroIndex() {
+          handleSnapPress(0);
+        },
+        snapToFirstIndex() {
+          handleSnapPress(1);
+        },
+        close() {
+          sheetRef.current?.close();
+        },
+      };
+    });
+    return (
+      <BottomSheet
+        index={-1}
+        ref={sheetRef}
+        snapPoints={snapPoints}
+        onChange={handleSheetChange}
+        handleComponent={null}
+        style={styles.contentContainer}
+        backgroundStyle={styles.backgroundStyle}
+        enableOverDrag={false}
+        enableContentPanningGesture={false}
       >
-        {children}
-      </BottomSheetScrollView>
-    </BottomSheet>
-  );
-});
+        {isScrollView ? (
+          <BottomSheetScrollView
+            style={styles.container}
+            showsVerticalScrollIndicator={false}
+          >
+            {children}
+          </BottomSheetScrollView>
+        ) : (
+          <BottomSheetView style={styles.container}>{children}</BottomSheetView>
+        )}
+      </BottomSheet>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

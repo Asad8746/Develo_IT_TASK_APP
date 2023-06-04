@@ -10,26 +10,73 @@ const slice = createSlice({
     selectedDate: dayjs().format("DD-MM-YYYY"),
     error: "",
     data: {},
+    selectedTask: null,
+    taskAction: "",
   },
   reducers: {
-    createNewTask(state, action) {
-      const { heading, detail, day, time } = action.payload;
-      const [hour, minutes] = time.split(":");
-      const taskDay = state.data[day];
+    copyTask(state, action) {
+      const selectedDate = state.selectedDate;
+      const taskDay = state.data[selectedDate];
+      const { heading, detail, time } = action.payload;
+      const [hour] = time?.split(":");
+      const id = Math.floor(Math.random() * 5000);
+
       if (taskDay) {
         taskDay.tasks[`${hour}:00`]
           ? taskDay.tasks[`${hour}:00`].push({
-              id: time,
+              id,
               heading,
               detail,
-              dueDate: `${hour} : ${minutes} | ${day}`,
+              time,
+              day: selectedDate,
             })
           : (taskDay.tasks[`${hour}:00`] = [
               {
-                id: time,
+                id,
                 heading,
                 detail,
-                dueDate: `${time} | ${day}`,
+                time,
+                day: selectedDate,
+              },
+            ]);
+      } else {
+        state.data[selectedDate] = {
+          title: selectedDate,
+          tasks: {
+            [`${hour}:00`]: [
+              {
+                id,
+                heading,
+                detail,
+                time,
+                day: selectedDate,
+              },
+            ],
+          },
+        };
+      }
+    },
+    createNewTask(state, action) {
+      const { heading, detail, day, time } = action.payload;
+      const [hour] = time.split(":");
+      const taskDay = state.data[day];
+      const id = Math.floor(Math.random() * 5000);
+      if (taskDay) {
+        taskDay.tasks[`${hour}:00`]
+          ? taskDay.tasks[`${hour}:00`].push({
+              id,
+              heading,
+              detail,
+              time,
+              day,
+            })
+          : (taskDay.tasks[`${hour}:00`] = [
+              {
+                id,
+                heading,
+                detail,
+                time,
+                day,
               },
             ]);
       } else {
@@ -38,10 +85,11 @@ const slice = createSlice({
           tasks: {
             [`${hour}:00`]: [
               {
-                id: time,
+                id,
                 heading,
                 detail,
-                dueDate: `${time} | ${day}`,
+                time,
+                day,
               },
             ],
           },
@@ -51,12 +99,29 @@ const slice = createSlice({
     setSelectedDate(state, action) {
       state.selectedDate = action.payload;
     },
-    // editTask(state, action) {
-    //   console.log("Edit Task");
-    //   return { ...state };
-    // },
+    setSelectedTask(state, action) {
+      state.selectedTask = action.payload;
+    },
+    setTaskAction(state, action) {
+      if (state.taskAction === action.payload) {
+        state.taskAction = "";
+      } else {
+        state.taskAction = action.payload;
+      }
+    },
   },
 });
+export const TASKS_OPERATIONS = {
+  copy: "COPY_TASK",
+  move: "MOVE_TASK",
+};
 
-export const { createNewTask, editTask, setSelectedDate } = slice.actions;
+export const {
+  createNewTask,
+  editTask,
+  setSelectedDate,
+  setSelectedTask,
+  setTaskAction,
+  copyTask,
+} = slice.actions;
 export default slice.reducer;
