@@ -64,7 +64,7 @@ export const Input = ({
 Input.propTypes = {
   placeholder: PropsTypes.string.isRequired,
   secureTextEntry: PropsTypes.bool.isRequired,
-  keyboardType: PropsTypes.string.isRequired,
+  keyboardType: PropsTypes.string,
 };
 
 const styles = StyleSheet.create({

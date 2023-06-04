@@ -9,64 +9,6 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { TaskCard } from "./TaskCard";
 import { useSelector } from "react-redux";
-// import tasks from "../store/tasks";
-const data = {
-  "04-05-2023": {
-    title: "04-05-2023",
-    tasks: {
-      "08:00": [
-        {
-          id: 1,
-          heading: "Task #1",
-          detail: "Task Detail",
-          dueDate: "8 AM | 12-01-22",
-        },
-        {
-          id: 2,
-          heading: "Task #1",
-          detail: "Task Detail",
-          dueDate: "8 AM | 12-01-22",
-        },
-      ],
-      "09:00": [
-        {
-          id: 1,
-          heading: "Task #1",
-          detail: "Task Detail",
-          dueDate: "8 AM | 12-01-22",
-        },
-      ],
-      "01:00": [
-        {
-          id: 1,
-          heading: "Task #1",
-          detail: "Task Detail",
-          dueDate: "8 AM | 12-01-22",
-        },
-        {
-          id: 2,
-          heading: "Task #1",
-          detail: "Task Detail",
-          dueDate: "8 AM | 12-01-22",
-        },
-      ],
-      "23:00": [
-        {
-          id: 1,
-          heading: "Task #1",
-          detail: "Task Detail",
-          dueDate: "8 AM | 12-01-22",
-        },
-        {
-          id: 2,
-          heading: "Task #1",
-          detail: "Task Detail",
-          dueDate: "8 AM | 12-01-22",
-        },
-      ],
-    },
-  },
-};
 
 export const TasksList = () => {
   const { selectedDate, data } = useSelector((store) => store.tasks);
@@ -78,7 +20,7 @@ export const TasksList = () => {
     );
   };
   return (
-    <ScrollView>
+    <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
         {new Array(24).fill(1).map((_, idx) => {
           const time = String(idx).length === 1 ? `0${idx}:00` : `${idx}:00`;
@@ -122,6 +64,9 @@ export const TasksList = () => {
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    zIndex: -2,
+  },
   container: {
     width: "100%",
     paddingRight: 15,
@@ -129,6 +74,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 25,
     marginBottom: 60,
+    // zIndex: -2,
   },
   line: {
     backgroundColor: "#00000033",

@@ -16,18 +16,18 @@ import { InputDatePicker } from "./InputDatePicker";
 import { useFormValidation } from "../hooks";
 import { createNewTask } from "../store/tasks";
 
+const INIT_STATE = {
+  time: dayjs().format("HH:mm"),
+  day: dayjs().format("DD-MM-YYYY"),
+};
+
 export const CreateTaskForm = ({ onClose = () => {} }) => {
   const dispatch = useDispatch();
   const taskHeading = useFormValidation("", "Task Heading is Required");
   const taskDetail = useFormValidation("", "Task Detail is Required");
-  const [date, setDate] = useState({
-    time: dayjs().format("HH:mm"),
-    day: dayjs().format("DD-MM-YYYY"),
-  });
+  const [date, setDate] = useState(INIT_STATE);
   const disabled = !taskHeading.isValid && !taskDetail.isValid;
   const onSavePress = useCallback(() => {
-    taskHeading.reset();
-    taskDetail.reset();
     dispatch(
       createNewTask({
         heading: taskHeading.value,
@@ -36,6 +36,9 @@ export const CreateTaskForm = ({ onClose = () => {} }) => {
         day: date.day,
       })
     );
+    taskHeading.reset();
+    taskDetail.reset();
+    setDate({ ...INIT_STATE });
     onClose();
   }, [taskHeading.value, taskDetail.value, date.day, date.time]);
   const onCancelPress = useCallback(() => {

@@ -17,12 +17,21 @@ const slice = createSlice({
       const [hour, minutes] = time.split(":");
       const taskDay = state.data[day];
       if (taskDay) {
-        taskDay.tasks[`${hour}:00`].push({
-          id: time,
-          heading,
-          detail,
-          dueDate: `${hour} : ${minutes} | ${day}`,
-        });
+        taskDay.tasks[`${hour}:00`]
+          ? taskDay.tasks[`${hour}:00`].push({
+              id: time,
+              heading,
+              detail,
+              dueDate: `${hour} : ${minutes} | ${day}`,
+            })
+          : (taskDay.tasks[`${hour}:00`] = [
+              {
+                id: time,
+                heading,
+                detail,
+                dueDate: `${time} | ${day}`,
+              },
+            ]);
       } else {
         state.data[day] = {
           title: day,

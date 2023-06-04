@@ -6,7 +6,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { CustomDatePicker } from "./DatePicker";
 import dayjs from "dayjs";
 
-export const InputDatePicker = ({ mode, time, day, onDateChange }) => {
+export const InputDatePicker = ({
+  date = new Date(),
+  mode,
+  time,
+  day,
+  onDateChange,
+}) => {
   const pickerRef = useRef(null);
 
   const onDatePickerPress = useCallback(() => {
@@ -14,8 +20,9 @@ export const InputDatePicker = ({ mode, time, day, onDateChange }) => {
   }, [pickerRef.current]);
   const onDatePick = useCallback((date) => {
     if (date) {
-      const time = dayjs(date).format("HH : mm");
+      const time = dayjs(date).format("HH:mm");
       const day = dayjs(date).format("DD-MM-YYYY");
+
       onDateChange(time, day);
     }
   }, []);
@@ -30,7 +37,12 @@ export const InputDatePicker = ({ mode, time, day, onDateChange }) => {
           {time} | {day}
         </Text>
         <AntDesign name="caretdown" size={10} color="#2B2B2B" />
-        <CustomDatePicker ref={pickerRef} mode={mode} onDatePick={onDatePick} />
+        <CustomDatePicker
+          date={date}
+          ref={pickerRef}
+          mode={mode}
+          onDatePick={onDatePick}
+        />
       </TouchableOpacity>
     </>
   );
@@ -41,6 +53,7 @@ InputDatePicker.propTypes = {
   day: PropTypes.string.isRequired,
   time: PropTypes.string.isRequired,
   onDateChange: PropTypes.func.isRequired,
+  date: PropTypes.instanceOf(Date),
 };
 const styles = StyleSheet.create({
   datePlaceholderContainer: {

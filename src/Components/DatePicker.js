@@ -6,10 +6,11 @@ import React, {
 } from "react";
 import PropTypes from "prop-types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import dayjs from "dayjs";
-
 export const CustomDatePicker = forwardRef(
-  ({ mode = "datetime", date = new Date(), onDatePick = () => {} }, ref) => {
+  (
+    { mode = "datetime", date = new Date(), onDatePick = () => {}, ...rest },
+    ref
+  ) => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     useImperativeHandle(ref, () => {
       return {
@@ -42,7 +43,8 @@ export const CustomDatePicker = forwardRef(
           minuteInterval={59}
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
-          is24Hour={true}
+          is24Hour
+          {...rest}
         />
       </>
     );
