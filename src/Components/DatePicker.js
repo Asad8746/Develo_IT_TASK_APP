@@ -8,7 +8,13 @@ import PropTypes from "prop-types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 export const CustomDatePicker = forwardRef(
   (
-    { mode = "datetime", date = new Date(), onDatePick = () => {}, ...rest },
+    {
+      mode = "datetime",
+      date = new Date(),
+      onDatePick = () => {},
+      disabled = false,
+      ...rest
+    },
     ref
   ) => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -54,4 +60,5 @@ export const CustomDatePicker = forwardRef(
 CustomDatePicker.propTypes = {
   mode: PropTypes.string,
   onDatePick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };

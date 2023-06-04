@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,42 +8,78 @@ import {
 } from "react-native";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Input } from "./Input";
 import { CustomButton } from "./Button";
 import { InputDatePicker } from "./InputDatePicker";
 import { useFormValidation } from "../hooks";
-import { createNewTask } from "../store/tasks";
+import {
+  TASKS_OPERATIONS,
+  createNewTask,
+  editTask,
+  setTaskAction,
+  setSelectedTask,
+} from "../store/tasks";
 
-const INIT_STATE = {
+const INIT_DATE_STATE = {
   time: dayjs().format("HH:mm"),
   day: dayjs().format("DD-MM-YYYY"),
 };
 
-export const CreateTaskForm = ({ onClose = () => {} }) => {
+export const CreateTaskForm = ({
+  initHeading = "",
+  initDetail = "",
+  initDate,
+  onClose = () => {},
+  pickerDisabled = false,
+}) => {
   const dispatch = useDispatch();
-  const taskHeading = useFormValidation("", "Task Heading is Required");
-  const taskDetail = useFormValidation("", "Task Detail is Required");
-  const [date, setDate] = useState(INIT_STATE);
+  const { selectedTask, taskAction } = useSelector((store) => store.tasks);
+  const isEditedForm = selectedTask && taskAction === TASKS_OPERATIONS.edit;
+  const taskHeading = useFormValidation(
+    initHeading,
+    "Task Heading is Required"
+  );
+  const taskDetail = useFormValidation(initDetail, "Task Detail is Required");
+  const [date, setDate] = useState(initDate ? initDate : INIT_DATE_STATE);
   const disabled = !taskHeading.isValid && !taskDetail.isValid;
   const onSavePress = useCallback(() => {
-    dispatch(
-      createNewTask({
-        heading: taskHeading.value,
-        detail: taskDetail.value,
-        time: date.time,
-        day: date.day,
-      })
-    );
+    if (isEditedForm) {
+      dispatch(
+        editTask({
+          ...selectedTask,
+          heading: taskHeading.value,
+          detail: taskDetail.value,
+          time: date.time,
+          day: date.day,
+        })
+      );
+    } else {
+      dispatch(
+        createNewTask({
+          heading: taskHeading.value,
+          detail: taskDetail.value,
+          time: date.time,
+          day: date.day,
+        })
+      );
+    }
     taskHeading.reset();
     taskDetail.reset();
-    setDate({ ...INIT_STATE });
+    setDate({ ...INIT_DATE_STATE });
     onClose();
-  }, [taskHeading.value, taskDetail.value, date.day, date.time]);
-  const onCancelPress = useCallback(() => {
+  }, [taskHeading.value, taskDetail.value, date.day, date.time, isEditedForm]);
+  const onCancelPress = () => {
     onClose();
-  }, []);
+    if (isEditedForm) {
+      taskHeading.reset();
+      taskDetail.reset();
+      setDate({ ...INIT_DATE_STATE });
+      dispatch(setSelectedTask(null));
+      dispatch(setTaskAction(""));
+    }
+  };
   const onDateChange = useCallback((time, day) => {
     setDate({ time, day });
   }, []);
@@ -73,6 +109,7 @@ export const CreateTaskForm = ({ onClose = () => {} }) => {
           day={date.day}
           time={date.time}
           onDateChange={onDateChange}
+          disabled={pickerDisabled}
         />
         <CustomButton
           title="Save Changes"

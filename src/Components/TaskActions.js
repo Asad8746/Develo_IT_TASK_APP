@@ -13,7 +13,10 @@ import {
   setTaskAction,
   TASKS_OPERATIONS,
 } from "../store/tasks";
-export const TaskActions = ({ closeBottomSheet = () => {} }) => {
+export const TaskActions = ({
+  closeBottomSheet = () => {},
+  openFormSheet = () => {},
+}) => {
   const dispatch = useDispatch();
   const { taskAction, selectedTask } = useSelector((store) => store.tasks);
   const renderAction = (title, onPress = () => {}, isActive = false) => {
@@ -30,6 +33,11 @@ export const TaskActions = ({ closeBottomSheet = () => {} }) => {
   }, []);
   const onMovePress = useCallback(() => {
     dispatch(setTaskAction(TASKS_OPERATIONS.move));
+  }, []);
+  const onEditPress = useCallback(() => {
+    dispatch(setTaskAction(TASKS_OPERATIONS.edit));
+    closeBottomSheet();
+    openFormSheet();
   }, []);
   const onSelectedPress = useCallback(() => {
     if (selectedTask) {
@@ -58,7 +66,7 @@ export const TaskActions = ({ closeBottomSheet = () => {} }) => {
             </View>
           </TouchableOpacity>
           <View style={styles.actionsContainer}>
-            {renderAction("Edit")}
+            {renderAction("Edit", onEditPress)}
             {renderAction(
               "Copy",
               onCopyPress,

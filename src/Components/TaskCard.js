@@ -8,10 +8,9 @@ export const TaskCard = ({
   task = {},
   onTaskPress = () => {},
 }) => {
-  const { selectedDate } = useSelector((store) => store.tasks);
-  const onPress = useCallback(() => {
+  const onPress = () => {
     onTaskPress(task);
-  }, []);
+  };
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.headingContainer}>

@@ -2,7 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 // here i am using dux pattern where we place every related to state management inside of one file
 // like reducers actionsCreators etc
-
+export const TASKS_OPERATIONS = {
+  copy: "COPY_TASK",
+  move: "MOVE_TASK",
+  edit: "EDIT_TASK",
+};
 const slice = createSlice({
   name: "Tasks",
   initialState: {
@@ -54,6 +58,30 @@ const slice = createSlice({
             ],
           },
         };
+      }
+    },
+    editTask(state, action) {
+      const { id, heading, detail, time, day } = action.payload;
+      const taskDay = state.data[day];
+      const [hour] = time?.split(":");
+      if (taskDay) {
+        state.selectedTask = null;
+        state.taskAction = "";
+        taskDay.tasks[`${hour}:00`] = taskDay?.tasks[`${hour}:00`].map(
+          (task) => {
+            if (task.id === id) {
+              return {
+                id,
+                heading,
+                detail,
+                time,
+                day,
+              };
+            } else {
+              return task;
+            }
+          }
+        );
       }
     },
     moveTask(state, action) {
@@ -153,10 +181,16 @@ const slice = createSlice({
       state.selectedDate = action.payload;
     },
     setSelectedTask(state, action) {
-      state.selectedTask = action.payload;
+      return {
+        ...state,
+        selectedTask: action.payload,
+      };
     },
     setTaskAction(state, action) {
-      if (state.taskAction === action.payload) {
+      if (
+        state.taskAction === action.payload &&
+        action.payload !== TASKS_OPERATIONS.edit
+      ) {
         state.taskAction = "";
       } else {
         state.taskAction = action.payload;
@@ -164,10 +198,6 @@ const slice = createSlice({
     },
   },
 });
-export const TASKS_OPERATIONS = {
-  copy: "COPY_TASK",
-  move: "MOVE_TASK",
-};
 
 export const {
   createNewTask,

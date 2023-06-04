@@ -11,6 +11,7 @@ import { TaskCard } from "./TaskCard";
 import { useDispatch, useSelector } from "react-redux";
 import { TaskActions } from "./TaskActions";
 import { CustomBottomSheet } from "./BottomSheet";
+import { CreateTaskForm } from "./CreateTaskForm";
 import {
   TASKS_OPERATIONS,
   setSelectedTask,
@@ -23,11 +24,24 @@ export const TasksList = () => {
   const { selectedDate, selectedTask, data, taskAction } = useSelector(
     (store) => store.tasks
   );
-  const dispatch = useDispatch();
+  const isEditedForm = selectedTask && taskAction === TASKS_OPERATIONS.edit;
+  const TASK_HEADING_INIT = isEditedForm ? selectedTask.heading : "";
+  const TASK_DETAIL_INIT = isEditedForm ? selectedTask.detail : "";
+  const formSheetRef = useRef(null);
   const actionsRef = useRef(null);
+  const dispatch = useDispatch();
+
   const closeBottomSheet = useCallback(() => {
     actionsRef.current?.close();
   }, [actionsRef.current]);
+
+  const openFormSheet = useCallback(() => {
+    formSheetRef.current?.snapToFirstIndex();
+  }, [formSheetRef.current]);
+
+  const closeFormBottomSheet = useCallback(() => {
+    formSheetRef.current?.close();
+  }, [formSheetRef.current]);
   const onTaskPress = useCallback(
     (task) => {
       dispatch(setSelectedTask(task));
@@ -35,7 +49,6 @@ export const TasksList = () => {
     },
     [actionsRef.current]
   );
-  console.log(selectedTask);
   const renderTouchableIcon = (time = "", customStyle) => {
     const onPress = () => {
       if (selectedTask) {
@@ -61,9 +74,26 @@ export const TasksList = () => {
   return (
     <>
       <CustomBottomSheet ref={actionsRef}>
-        <TaskActions closeBottomSheet={closeBottomSheet} />
+        <TaskActions
+          closeBottomSheet={closeBottomSheet}
+          openFormSheet={openFormSheet}
+        />
       </CustomBottomSheet>
-
+      <CustomBottomSheet ref={formSheetRef}>
+        {isEditedForm && (
+          <CreateTaskForm
+            onClose={closeFormBottomSheet}
+            initHeading={TASK_HEADING_INIT}
+            initDetail={TASK_DETAIL_INIT}
+            initDate={
+              isEditedForm
+                ? { time: selectedTask.time, day: selectedTask.day }
+                : null
+            }
+            pickerDisabled
+          />
+        )}
+      </CustomBottomSheet>
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.container}>
           {new Array(24).fill(1).map((_, idx) => {
@@ -72,7 +102,7 @@ export const TasksList = () => {
 
             if (tasks) {
               return (
-                <View key={time}>
+                <View key={`${time}/idx`}>
                   <View style={styles.row}>
                     <View style={styles.hourContainer}>
                       <Text style={styles.hourText}>{time}</Text>
@@ -88,7 +118,7 @@ export const TasksList = () => {
                             <TaskCard
                               task={task}
                               isSelected={isSelected}
-                              key={`${task.id}/${idx}`}
+                              key={task.id}
                               onTaskPress={onTaskPress}
                             />
                           </>
@@ -100,7 +130,7 @@ export const TasksList = () => {
               );
             }
             return (
-              <View style={styles.row} key={time}>
+              <View style={styles.row} key={`${time}/idx`}>
                 <View style={styles.hourContainerWithoutTask}>
                   <Text style={styles.hourText}>{time}</Text>
                 </View>
@@ -126,8 +156,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     alignSelf: "center",
     marginTop: 25,
-    marginBottom: 60,
-    // zIndex: -2,
+    marginBottom: 80,
   },
   line: {
     backgroundColor: "#00000033",

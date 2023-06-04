@@ -12,6 +12,7 @@ export const InputDatePicker = ({
   time,
   day,
   onDateChange,
+  disabled = false,
 }) => {
   const pickerRef = useRef(null);
 
@@ -32,6 +33,7 @@ export const InputDatePicker = ({
       <TouchableOpacity
         style={styles.datePlaceholderContainer}
         onPress={onDatePickerPress}
+        disabled={disabled}
       >
         <Text style={styles.dateText}>
           {time} | {day}
@@ -54,6 +56,7 @@ InputDatePicker.propTypes = {
   time: PropTypes.string.isRequired,
   onDateChange: PropTypes.func.isRequired,
   date: PropTypes.instanceOf(Date),
+  disabled: PropTypes.bool,
 };
 const styles = StyleSheet.create({
   datePlaceholderContainer: {
